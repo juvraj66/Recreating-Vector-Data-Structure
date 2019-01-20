@@ -1,0 +1,147 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <cmath>
+using namespace std;
+class Vec_int{
+public:
+   Vec_int();
+   Vec_int(int n);
+   Vec_int(int n, int a);
+   Vec_int(const Vec_int &orig);
+   Vec_int& operator= (const Vec_int &rhs);
+   ~Vec_int();
+   int capacity()const{return _capacity;}
+   int size()const{return _size;}
+   int front()const{
+      if(_size<=0) return 0;
+      if(_size>0) return _vec[0];
+
+   }
+   int back()const{
+      if(_size<=0) return 0;
+      if(_size>0) return _vec[_size-1];
+   }
+   void clear(){ _size=0;}
+   void pop_back(){_size=_size-1;}
+   void push_back(int a);
+   int& at(int n);
+private:
+   int _capacity;
+   int _size;
+   int * _vec;
+   void allocate(){
+      if(_capacity<=0) _vec=NULL;
+      if(_capacity>0) _vec=new int[_capacity];
+   }
+   void release(){
+      if(_vec==NULL) return ;
+      else{
+        delete[] _vec;
+        _vec=NULL;
+      }
+   }
+
+};
+Vec_int::Vec_int() : _capacity(0), _size(0), _vec(0) {} // another way to make a constructoer
+Vec_int::Vec_int(int n){
+   if(n<=0) _capacity=0, _size=0, _vec=NULL;
+   else{
+     _capacity=n, _size=n;
+     allocate();
+   }
+}
+Vec_int::Vec_int(int n, int a){
+   if(n<=0) _capacity=0, _size=0, _vec=NULL;
+   else{
+      _capacity=n, _size=n;
+      allocate();
+         for(int i=0;i<_capacity;i++){
+            _vec[i]=a;
+         }
+   }
+}
+Vec_int::~Vec_int(){ release();}
+Vec_int::Vec_int(const Vec_int &orig){
+   _capacity=orig._size;
+   _size=orig._size;
+   allocate();
+   for(int i=0;i<_size;i++){
+      _vec[i]=orig._vec[i];
+   }
+}
+Vec_int& Vec_int::operator= (const Vec_int &rhs){
+   if(this==&rhs) return *this;
+   _capacity=rhs._size;
+   _size=rhs._size;
+   release();
+   allocate();
+   for(int i=0;i<_size;i++){
+      _vec[i]=rhs._vec[i];
+   }
+   return *this;
+}
+void Vec_int::push_back(int a){
+   if(_size<_capacity){
+      _vec[_size]=a;
+      _size=_size+1;
+   }
+    if (_size == _capacity){
+      if(_capacity==0) _capacity=1;
+      else if(_capacity) _capacity *=2;
+
+      int *oldvec=_vec;
+      allocate();
+      if(oldvec!=NULL|| oldvec==NULL){
+         for(int i=0;i<_size;i++){
+            _vec[i]=oldvec[i];}
+         delete [] oldvec;}
+      _vec[_size]=a;
+     _size=_size+1;
+   }
+}
+int& Vec_int::at(int n){
+   if(n>=0 && n<_size) return _vec[n];
+   if(n<0||n>=_size){
+      int *pnull=NULL;
+      return *pnull;
+   }
+}
+void reverse(Vec_int &v){
+int n=v.size();
+int n2=n-1;
+   if(n<=1) return;
+int t[v.size()];
+   for(int i=n-1;i>=0;i--){
+      t[n2-i]=v.at(i);
+   }
+   for(int i=0;i<n;i++)
+      v.at(i)=t[i];
+}
+void print(Vec_int v){
+int n=v.size();
+
+   for(int i=0;i<n;i++){
+   cout<<v.at(i)<<" ";
+ }
+ cout<<endl;
+}
+
+
+int main(){
+Vec_int t(3,2);
+t.push_back(6);
+t.push_back(7);
+cout<<"Size is:"<<t.size()<<endl;
+t.pop_back();
+cout<<"Capacity is:"<<t.capacity()<<endl;
+reverse(t);
+print(t);
+cout<<"Front is:"<<t.front()<<endl;
+cout<<"Back is:"<<t.back()<<endl;
+t.clear();
+cout<<"Size is:"<<t.size()<<endl;
+
+
+  return 0;
+}
