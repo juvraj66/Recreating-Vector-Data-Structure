@@ -10,4 +10,5 @@ int main(){
   g.push_back(12);
   g.pop_back();
   std::cout<<g.front()<<" "<<g.back();
+  return 0;
 }
